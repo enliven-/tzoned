@@ -4,17 +4,22 @@ RSpec.describe TimezonesController, type: :controller do
   
   describe 'GET #index' do
     before(:each) do
-      4.times { FactoryGirl.create :timezone }
-      get :index
+      user = FactoryGirl.create(:user)
+      4.times { FactoryGirl.create :timezone, user: user }
+
+      api_authorization_header user.auth_token
+      get :index, { user_id: user.id }
     end
 
     it 'returns records from the database as json array' do
       timezones_response = json_response[:timezones]
+
       expect(timezones_response).to be_a Array
     end
 
     # it 'returns the user object into each timezone' do
     #   timezones_response = json_response[:timezones]
+
     #   timezones_response.each do |timezone_response|
     #     expect(timezone_response[:user]).to be_present
     #   end
@@ -26,8 +31,11 @@ RSpec.describe TimezonesController, type: :controller do
 
   describe 'GET #show' do
     before(:each) do
-      @timezone = FactoryGirl.create :timezone
-      get :show, id: @timezone.id
+      user = FactoryGirl.create(:user)
+      @timezone = FactoryGirl.create(:timezone, user: user) 
+
+      api_authorization_header user.auth_token
+      get :show, { user_id: user.id, id: @timezone.id }
     end
 
     it 'returns the information about timezone as a hash' do
@@ -50,6 +58,7 @@ RSpec.describe TimezonesController, type: :controller do
       before(:each) do
         user = FactoryGirl.create :user
         @timezone_attributes = FactoryGirl.attributes_for :timezone
+
         api_authorization_header user.auth_token
         post :create, { user_id: user.id, timezone: @timezone_attributes }
       end
@@ -66,6 +75,7 @@ RSpec.describe TimezonesController, type: :controller do
       before(:each) do
         user = FactoryGirl.create :user
         @invalid_timezone_attributes = { gmt_difference: 'something', city_id: 1 } # name not present
+        
         api_authorization_header user.auth_token
         post :create, { user_id: user.id, timezone: @invalid_timezone_attributes }
       end
@@ -90,11 +100,11 @@ RSpec.describe TimezonesController, type: :controller do
     before(:each) do
       @user = FactoryGirl.create :user
       @timezone = FactoryGirl.create :timezone, user: @user
-      api_authorization_header @user.auth_token
     end
 
     context 'when is successfully updated' do
       before(:each) do
+        api_authorization_header @user.auth_token
         patch :update, { user_id: @user.id, id: @timezone.id,
               timezone: { name: 'CT' } }
       end
@@ -109,6 +119,7 @@ RSpec.describe TimezonesController, type: :controller do
 
     context 'when is not updated' do
       before(:each) do
+        api_authorization_header @user.auth_token
         patch :update, { user_id: @user.id, id: @timezone.id,
               timezone: { gmt_difference: 'two hundred' } }
       end

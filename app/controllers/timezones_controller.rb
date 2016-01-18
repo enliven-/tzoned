@@ -1,15 +1,15 @@
 class TimezonesController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create, :update]
+  before_action :authenticate_with_token!
   respond_to :json
 
 
   def index
-    respond_with Timezone.all
+    respond_with current_user.timezones
   end
 
 
   def show
-    respond_with Timezone.find(params[:id])
+    respond_with current_user.timezones.find(params[:id])
   end
 
 
@@ -17,7 +17,7 @@ class TimezonesController < ApplicationController
     timezone = current_user.timezones.build(timezone_params)
 
     if timezone.save
-      render json: timezone, status: 201, location: [timezone]
+      render json: timezone, status: 201, location: [current_user, timezone]
     else
       render json: { errors: timezone.errors }, status: 422
     end
@@ -27,7 +27,7 @@ class TimezonesController < ApplicationController
   def update
     timezone = current_user.timezones.find(params[:id])
     if timezone.update(timezone_params)
-      render json: timezone, status: 200, location: [timezone]
+      render json: timezone, status: 200, location: [current_user, timezone]
     else
       render json: { errors: timezone.errors }, status: 422
     end

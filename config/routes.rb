@@ -5,10 +5,8 @@ Rails.application.routes.draw do
 
 
   resources :users, only: [:show, :create, :update, :destroy] do
-    resources :timezones, only: [:create, :update, :destroy]
+    resources :timezones
   end
   
-  resources :timezones, :only => [:show, :index]
-
   get '/test', to: 'test#index'
 end
