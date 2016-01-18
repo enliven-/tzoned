@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160118100419) do
+ActiveRecord::Schema.define(version: 20160118120211) do
+
+  create_table "timezones", force: :cascade do |t|
+    t.string   "name"
+    t.integer  "city_id"
+    t.integer  "gmt_difference"
+    t.integer  "user_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "timezones", ["user_id"], name: "index_timezones_on_user_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

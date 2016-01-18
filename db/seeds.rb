@@ -7,3 +7,4 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 3.times { FactoryGirl.create(:user) }
+3.times { FactoryGirl.create(:timezone) }
