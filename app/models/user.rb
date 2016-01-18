@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
 
   before_create :generate_auth_token!
 
+  has_many :timezones
+
 
   def generate_auth_token!
     begin
