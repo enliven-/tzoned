@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
   def create
     user = User.new(user_params)
-    
+
     if user.save
       render json: user, status: 201, location: [user]
     else
@@ -30,6 +30,13 @@ class UsersController < ApplicationController
   end
 
 
+  def destroy
+    user = User.find(params[:id])
+    user.destroy
+    head 204
+  end
+
+  
   private
 
     def user_params
