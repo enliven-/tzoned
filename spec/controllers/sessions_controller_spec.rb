@@ -18,7 +18,7 @@ RSpec.describe SessionsController, type: :controller do
       it "returns the user record corresponding to the given credentials" do
         @user.reload
         user_response = json_response[:user]
-        
+
         expect(user_response[:auth_token]).to eql @user.auth_token
       end
 
@@ -38,6 +38,19 @@ RSpec.describe SessionsController, type: :controller do
 
       it { should respond_with 422 }
     end
+  end
+
+
+  describe "DELETE #destroy" do
+
+    before(:each) do
+      @user = FactoryGirl.create :user
+      sign_in @user
+      delete :destroy, id: @user.auth_token
+    end
+
+    it { should respond_with 204 }
+
   end
 
 end
