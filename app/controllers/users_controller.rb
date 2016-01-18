@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  
+  before_action :authenticate_with_token!, only: [:update, :destroy]
   respond_to :json
 
 
@@ -20,7 +20,7 @@ class UsersController < ApplicationController
 
 
   def update
-    user = User.find(params[:id])
+    user = current_user
 
     if user.update(user_params)
       render json: user, status: 200, location: [user]
